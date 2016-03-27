@@ -136,7 +136,7 @@ class BrainRegionSimilarity(object):
             elif n2_parent_regions[0] in n1_parent_regions:
                 return .875 * BASE_MULTIPLIER, (['ABA_REGION:{}'.format(n2_parent_regions[0])], 'sharing a common brain region')
             elif len(common_regions) > 0:
-                return .75 * BASE_MULTIPLIER, (['ABA_REGION:{}'.format(common_regions.pop())], 'sibling regions')
+                return .74 * BASE_MULTIPLIER, (['ABA_REGION:{}'.format(common_regions.pop())], 'sibling regions')
         else:
             return (0, []) # no regions in both neurons
 

@@ -82,6 +82,29 @@ def clean_annotations(n, orig_neuron_str = None, return_dict = False):
                 new_clean[i][2] = proj_annot_strs[j]
     clean = new_clean
 
+    # do ugly check for a couple needed implicit correspondances for cholinergic
+    # define variants which imply cholinergic neurotransmission
+    cholinergic_equivalents = [ ['NeuronTrigger:motoneurons'], ['NeuronTrigger:motoneuron'],
+      ['NeuronTrigger:motorneuron'], ['Function:motor'],
+      ['NCBI_GENE:11423'], ['NCBI_GENE:12647']
+      ]
+    # cholinergic neurotransmission:
+    cholinergic_term = 'HBP_NEUROTRANSMITTER:0000005'
+    # check if has cholinergic
+    existing_terms = [c[2] for c in clean]
+    if cholinergic_term not in existing_terms:
+        new_term = []
+        for i,c in enumerate(clean):
+            term = c[2]
+            for j,p in enumerate(cholinergic_equivalents):
+                if term.lower() == p[0].lower():
+                    new_term = list(c)
+                    print new_term
+                    new_term[2] = cholinergic_term
+                    print new_term
+        if new_term:
+            clean.append(new_term)
+
     ret_dict_list = []
     for c in clean:
         temp_dict = {}
