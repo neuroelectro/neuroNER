@@ -134,7 +134,7 @@ class BrainRegionSimilarity(object):
             elif n1_parent_regions[0] in n2_parent_regions:
                 return .875 * BASE_MULTIPLIER, (['ABA_REGION:{}'.format(n1_parent_regions[0])], 'sharing a common brain region')
             elif n2_parent_regions[0] in n1_parent_regions:
-                return .875 * BASE_MULTIPLIER, (['ABA_REGION:{}'.format(n2_parent_regions[0])], 'sharing a common brain region')
+                return .86 * BASE_MULTIPLIER, (['ABA_REGION:{}'.format(n2_parent_regions[0])], 'sharing a common brain region')
             elif len(common_regions) > 0:
                 return .74 * BASE_MULTIPLIER, (['ABA_REGION:{}'.format(common_regions.pop())], 'sibling regions')
         else:
@@ -215,6 +215,54 @@ class ProteinSimilarity(object):
         else:
             return (0, []) # no morphologies common to both neurons
 
+class EphysSimilarity(object):
+    """EphysSimilarity: similarity """
+    PREFIX = 'HBP_EPHYS:'
+
+    '''
+    returns number of shared terms, else 0
+    '''
+    def similarity(self, n1, n2):
+        def neuron2terms(neuron):
+            matching_terms = []
+            for n in neuron:
+                if n.startswith(self.PREFIX):
+                    matching_terms.append(n)
+            return matching_terms
+
+        n1_terms = neuron2terms(n1)
+        n2_terms = neuron2terms(n2)
+
+        common_terms = list(set(n1_terms).intersection(set(n2_terms)))
+        if len(common_terms) > 0:
+            return (len(common_terms), (common_terms, 'shares ephys base terms') )
+        else:
+            return (0, []) # no morphologies common to both neurons
+
+class EphysTriggerSimilarity(object):
+    """LayerSimilarity: similarity """
+    PREFIX = 'HBP_EPHYS_TRIGGER'
+
+    '''
+    returns number of shared terms, else 0
+    '''
+    def similarity(self, n1, n2):
+        def neuron2terms(neuron):
+            matching_terms = []
+            for n in neuron:
+                if n.startswith(self.PREFIX):
+                    matching_terms.append(n)
+            return matching_terms
+
+        n1_terms = neuron2terms(n1)
+        n2_terms = neuron2terms(n2)
+
+        common_terms = list(set(n1_terms).intersection(set(n2_terms)))
+        if len(common_terms) > 0:
+            return (len(common_terms), (common_terms, 'shares ephys trigger terms') )
+        else:
+            return (0, []) # no morphologies common to both neurons
+
 class NeurotransmitterSimilarity(object):
     """LayerSimilarity: similarity """
     PREFIX = 'HBP_NEUROTRANSMITTER'
@@ -290,7 +338,8 @@ class UnknRegionSimilarity(object):
             return (0, []) # no regions common to both neurons
 
 similarities = [LayerSimilarity(), BrainRegionSimilarity(), ProjectionSimilarity(), UnknRegionSimilarity(),
-                MorphologySimilarity(), NeurotransmitterSimilarity(), ProteinSimilarity(), MouseLineSimilarity()]
+                MorphologySimilarity(), NeurotransmitterSimilarity(), ProteinSimilarity(), MouseLineSimilarity(),
+                EphysSimilarity(), EphysTriggerSimilarity()]
 
 
 def _similarity_intra(n1, n2, weights, symmetric):
